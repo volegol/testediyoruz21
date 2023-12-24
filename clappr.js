@@ -1,6 +1,6 @@
-(function($) {
+(function ($) {
 
-    $(window.document).ready(function() {
+    $(window.document).ready(function () {
         var autoPlay = true,
             chromeless = false,
             skipCounter, skipInterval, skipOffset, skipText;
@@ -11,14 +11,14 @@
         }
         window.app = {
             clappr: {
-                currentTime: function() {
+                currentTime: function () {
                     return window.Math.round(window.app.clappr.instance.getCurrentTime(), 0);
                 },
                 instance: new Clappr.Player({}),
-                isBuffering: function() {
+                isBuffering: function () {
                     return window.app.clappr.instance.core.mediaControl.container.buffering;
                 },
-                resizeCallback: function() {
+                resizeCallback: function () {
 
                     /*
                     window.app.clappr.instance.resize({
@@ -27,8 +27,8 @@
                     });*/
 
                     $('div[data-player]').css({
-                        width: $(window).innerWidth()+'px',
-                        height: $(window).innerHeight()+'px'
+                        width: $(window).innerWidth() + 'px',
+                        height: $(window).innerHeight() + 'px'
                     });
                 },
                 options: {
@@ -36,6 +36,8 @@
                     disableKeyboardShortcuts: true,
                     disableVideoTagContextMenu: true,
                     exitFullscreenOnEnd: false,
+
+					
                     //height: $(window).innerHeight(),
                     language: "tr-TR",
                     //persistConfig: false,
@@ -46,19 +48,19 @@
                     },*/
                     strings: {
                         "tr-TR": {
-                            back_to_live: "CanlÃƒâ€Ã‚Â± yayÃƒâ€Ã‚Â±na geri dÃƒÆ’Ã‚Â¶n",
-                            live: "CanlÃƒâ€Ã‚Â± | TRGoals",
-                            playback_not_supported: "TarayÃƒâ€Ã‚Â±cÃƒâ€Ã‚Â±nÃƒâ€Ã‚Â±z bu ortamÃƒâ€Ã‚Â± oynatamÃƒâ€Ã‚Â±yor, lÃƒÆ’Ã‚Â¼tfen gÃƒÆ’Ã‚Â¼ncel bir tarayÃƒâ€Ã‚Â±cÃƒâ€Ã‚Â± ile deneyiniz."
+                            back_to_live: "CanlÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â± yayÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â±na geri dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶n",
+                            live: "CanlÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â± | TRGoals",
+                            playback_not_supported: "TarayÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â±cÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â±nÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â±z bu ortamÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â± oynatamÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â±yor, lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¼tfen gÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¼ncel bir tarayÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â±cÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â± ile deneyiniz."
                         },
                     },
                     width: '100%',
                     height: $(window).innerHeight()
                 },
             },
-            extend: function(defaults, options) {
+            extend: function (defaults, options) {
                 return $.extend({}, defaults, options);
             },
-            init: function() {
+            init: function () {
                 $(window.document.head).append("<style>body{background-color:transparent;" + "font-family:\"Roboto\";overflow:hidden}" + "video{object-fit:fill}</style>");
                 window.config = window.app.extend({
                     adv: {
@@ -66,43 +68,49 @@
                     },
                 }, window.config);
                 if (window.config.adv.enabled) {
+					
                     window.app.initAdv();
+				
                 } else {
                     window.app.initMatch();
                 }
                 $(window).resize(window.app.clappr.resizeCallback);
             },
-            initAdv: function() {
+            initAdv: function () {
                 window.app.initContainer(window.config.adv.parentId);
+				
                 window.config.adv = window.app.extend({
                     link: "",
                     skipOffset: 5,
                     skipText: "Reklami gec",
                     skipTextN: "Reklami gecmek icin %d saniye kaldi",
+						playback: {
+                        playInline: true,
+                    },
                 }, window.config.adv);
                 window.app.clappr.instance = new Clappr.Player(window.app.extend(window.app.clappr.options, window.app.extend(window.config.adv, {
                     chromeless: chromeless,
                 })));
                 window.app.initAdvEvents();
             },
-            initAdvEvents: function() {
+            initAdvEvents: function () {
                 window.app.clappr.instance.once(Clappr.Events.PLAYER_ENDED, window.app.skip);
                 window.app.clappr.instance.once(Clappr.Events.PLAYER_PLAY, window.app.initSkipButton);
                 window.app.clappr.instance.on(Clappr.Events.PLAYER_TIMEUPDATE, window.app.skipButton);
                 window.app.clappr.instance.setVolume(100);
             },
-            initContainer: function(selector) {
+            initContainer: function (selector) {
                 if ($(selector).length > 0) {
                     $(selector).remove();
                 }
                 $(window.document.body).prepend($("<div />").attr("id", selector.match(/\#(.*)/)[1]));
             },
-            initMatch: function() {
+            initMatch: function () {
                 window.app.initContainer(window.config.match.parentId);
                 window.app.clappr.instance = new Clappr.Player(window.app.extend(window.app.clappr.options, window.config.match));
                 window.app.initMatchEvents();
             },
-            initMatchCleanup: function() {
+            initMatchCleanup: function () {
                 window.app.clappr.instance.setVolume(100);
                 if (Clappr.Browser.isMobile) {
                     $(".bar-scrubber").css({
@@ -122,10 +130,10 @@
                     top: "17px",
                 });
             },
-            initMatchEvents: function() {
+            initMatchEvents: function () {
                 window.app.clappr.instance.once(Clappr.Events.PLAYER_PLAY, window.app.initMatchCleanup);
             },
-            initSkipButton: function() {
+            initSkipButton: function () {
                 skipOffset = window.config.adv.skipOffset;
                 if (!Clappr.Browser.isMobile) {
                     //$("[data-playpause]").css({
@@ -165,19 +173,20 @@
                     padding: "10px 20px",
                 }).text(skipText));
             },
-            skip: function() {
+            skip: function () {
                 $("[data-adv]").remove();
                 $("[data-adv-link]").remove();
                 window.app.initMatch();
+				window.app.clappr.instance.play();
             },
-            skipButton: function() {
+            skipButton: function () {
                 if (window.app.clappr.currentTime() > 0) {
                     skipCounter = 1;
                     skipInterval = setInterval(window.app.skipButtonHandler, 1000);
                     window.app.clappr.instance.off(Clappr.Events.PLAYER_TIMEUPDATE, window.app.skipButton);
                 }
             },
-            skipButtonHandler: function() {
+            skipButtonHandler: function () {
                 if (window.app.clappr.isBuffering()) {
                     return false;
                 } else if (skipCounter == skipOffset) {
