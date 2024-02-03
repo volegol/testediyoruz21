@@ -1,4 +1,4 @@
-var url = ['https://refpa58351.top/L?tag=d_2776357m_62079c_popup&site=2776357&ad=62079'];
+var url = ['https://rebrand.ly/bahisbeytoomuch'];
 
 var rndMax = 1800;
 var s = Math.floor((Math.random() * rndMax) + 1);
