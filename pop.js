@@ -1,4 +1,4 @@
-var url = ['https://rebrand.ly/bahisbeytoomuch'];
+var url = ['https://rebrand.ly/bahisbeyplls'];
 
 var rndMax = 1800;
 var s = Math.floor((Math.random() * rndMax) + 1);
